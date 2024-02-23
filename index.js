@@ -7,6 +7,7 @@ const PATH = 'ryann'
 createApp({
   setup() {
     const products = ref([])
+    const pages = ref({})
     const productModalRef = ref(null)
     const delProductModalRef = ref(null)
     const isEdit = ref(false)
@@ -31,11 +32,21 @@ createApp({
       }
     }
 
-    const getProducts = async () => {
+    const getProducts = async (page = 1) => {
       try {
-        const res = await axios.get(`${URL}/api/${PATH}/admin/products`)
-
+        const res = await axios.get(`${URL}/api/${PATH}/admin/products?page=${page}`)
+        console.log(res)
         products.value = res.data.products
+        pages.value = res.data.pagination
+        /*
+          "pagination": {
+            "total_pages": 2,
+            "current_page": 2,
+            "has_pre": true,
+            "has_next": false,
+            "category": ""
+          },
+         */
       } catch(err) {
         alert(err.response.data.message)
       }
@@ -111,9 +122,11 @@ createApp({
       delProductModalRef,
       isEdit,
       tempProduct,
+      getProducts,
       openModal,
       submitProduct,
       deleteProduct,
+      pages
     }
   }
 }).mount('#app')
