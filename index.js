@@ -1,10 +1,11 @@
 import {createApp, onMounted, ref} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+import pagination from './Pagination.js'
 
 const URL = 'https://ec-course-api.hexschool.io/v2'
 const PATH = 'ryann'
 
 
-createApp({
+const app = createApp({
   setup() {
     const products = ref([])
     const pages = ref({})
@@ -129,4 +130,8 @@ createApp({
       pages
     }
   }
-}).mount('#app')
+})
+
+app.component('pagination', pagination)
+
+app.mount('#app')
