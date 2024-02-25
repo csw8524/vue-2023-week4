@@ -1,5 +1,6 @@
 import {createApp, onMounted, ref} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
-import pagination from './Pagination.js'
+import Pagination from './Pagination.js'
+import ProductModal from './ProductModal.js'
 
 const URL = 'https://ec-course-api.hexschool.io/v2'
 const PATH = 'ryann'
@@ -9,13 +10,12 @@ const app = createApp({
   setup() {
     const products = ref([])
     const pages = ref({})
-    const productModalRef = ref(null)
+    const productModal = ref(null)
     const delProductModalRef = ref(null)
     const isEdit = ref(false)
     const tempProduct = ref({
       imagesUrl: []
     })
-    let productModal
     let delProductModal
 
     const checkLogin = async () => {
@@ -60,10 +60,10 @@ const app = createApp({
 
       if (mode === 'create') {
         isEdit.value = false
-        productModal.show()
+        productModal.value.openModal()
       } else if (mode === 'edit') {
         isEdit.value = true
-        productModal.show()
+        productModal.value.openModal()
       } else if (mode === 'delete') {
         delProductModal.show()
       }
@@ -82,7 +82,7 @@ const app = createApp({
       } catch (err) {
         alert(err.response.data.message)
       } finally {
-        productModal.hide()
+        productModal.value.closeModal()
       }
 
     }
@@ -104,10 +104,6 @@ const app = createApp({
         await checkLogin()
         await getProducts()
 
-        productModal = new bootstrap.Modal(productModalRef.value, {
-          keyboard: false,
-          backdrop: 'static'
-        })
         delProductModal = new bootstrap.Modal(delProductModalRef.value, {
           keyboard: false,
           backdrop: 'static'
@@ -119,7 +115,7 @@ const app = createApp({
 
     return {
       products,
-      productModalRef,
+      productModal,
       delProductModalRef,
       isEdit,
       tempProduct,
@@ -132,6 +128,6 @@ const app = createApp({
   }
 })
 
-app.component('pagination', pagination)
-
+app.component('pagination', Pagination)
+app.component('product-modal', ProductModal)
 app.mount('#app')
