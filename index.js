@@ -1,6 +1,7 @@
 import {createApp, onMounted, ref} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 import Pagination from './Pagination.js'
 import ProductModal from './ProductModal.js'
+import DelModal from './DelModal.js'
 
 const URL = 'https://ec-course-api.hexschool.io/v2'
 const PATH = 'ryann'
@@ -11,12 +12,11 @@ const app = createApp({
     const products = ref([])
     const pages = ref({})
     const productModal = ref(null)
-    const delProductModalRef = ref(null)
+    const delProductModal = ref(null)
     const isEdit = ref(false)
     const tempProduct = ref({
       imagesUrl: []
     })
-    let delProductModal
 
     const checkLogin = async () => {
       try {
@@ -65,7 +65,7 @@ const app = createApp({
         isEdit.value = true
         productModal.value.openModal()
       } else if (mode === 'delete') {
-        delProductModal.show()
+        delProductModal.value.openModal()
       }
     }
     // 新增商品、編輯商品 利用 isEdit 判斷模式
@@ -95,7 +95,7 @@ const app = createApp({
       } catch (err) {
         alert(err.response.data.message)
       } finally {
-        delProductModal.hide()
+        delProductModal.value.closeModal()
       }
     }
  
@@ -103,11 +103,6 @@ const app = createApp({
       try {
         await checkLogin()
         await getProducts()
-
-        delProductModal = new bootstrap.Modal(delProductModalRef.value, {
-          keyboard: false,
-          backdrop: 'static'
-        })
       } catch (err) {
         alert('出現未經處理的錯誤')
       }
@@ -116,7 +111,7 @@ const app = createApp({
     return {
       products,
       productModal,
-      delProductModalRef,
+      delProductModal,
       isEdit,
       tempProduct,
       getProducts,
@@ -129,5 +124,7 @@ const app = createApp({
 })
 
 app.component('pagination', Pagination)
-app.component('product-modal', ProductModal)
+  .component('product-modal', ProductModal)
+  .component('del-modal', DelModal)
+
 app.mount('#app')
