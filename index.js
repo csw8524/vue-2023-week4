@@ -36,7 +36,6 @@ const app = createApp({
     const getProducts = async (page = 1) => {
       try {
         const res = await axios.get(`${URL}/api/${PATH}/admin/products?page=${page}`)
-        console.log(res)
         products.value = res.data.products
         pages.value = res.data.pagination
         /*
